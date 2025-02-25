@@ -62,6 +62,14 @@ for _, img in enumerate(dataloader):
     print(fname,": ",str(pred))
 
 #  SAVE OUTPUT FILE
-out_df = pd.DataFrame(zip(filenames, predictions), columns= ["filenames", "predictions"])
+out_df = pd.DataFrame(zip(filenames, predictions), columns=["filenames", "predictions"])
+
+# Split the filenames column
+out_df["worker_id"] = out_df["filenames"].str.split("_Group_").str[0]
+out_df["drawing_group"] = out_df["filenames"].str.split("_Group_").str[1].str.replace(".png", "")
+out_df["drawing_group"] = "Incomplete_Group_" + out_df["drawing_group"]
+out_df = out_df[["worker_id", "drawing_group", "predictions"]]
+
+# Save to CSV
 out_df.to_csv(output_filename, index = False)
 
