@@ -19,6 +19,7 @@ The following is the **top-level directory layout** of this repo:
     ├── AuDrA_trained.ckpt (gitignored)               # Checkpoint file of pre-trained AuDrA model
     ├── datafuncs.py                                  # A helper function
     ├── invert.py                                     # A helper function
+    ├── store_user_images.py                          # A script to store user images from `analysis/data/drawings/png` direcotry in the `user_images` directory
     ├── README.md
 
 ## Environment Activation and Code Running
@@ -33,10 +34,18 @@ The next step is to activate the created environment (still suppose using CPU):
 conda activate audra_cpu
 ```
 
-The next step is to run `AuDrA_run.py` file (using the Python interpreter located at the virtual environment), which calculates originality ratings of drawings stored in `\user_images` and outputs the results into `AuDrA_predictions.csv` (default name of output csv file):
+Afterwards, we need to *copy* drawings from the `analysis/data/drawings/png` directory into the `user_images` directory in this repository:
 ```bash
-/opt/miniconda3/envs/audra_cpu/bin/python AuDrA_run.py
+python store_user_images.py
 ```
+
+Finally, run `AuDrA_run.py` file (using the Python interpreter located at the virtual environment), which calculates originality ratings of drawings stored in `\user_images` and outputs the results into `AuDrA_predictions.csv` (default name of output csv file):
+```bash
+python AuDrA_run.py
+```
+
+## OSF Access
+To acceess the the trained AuDrA model (with tutorial), analysis script, and ratings, go to [this website](https://osf.io/kqn9v/). 
 
 ## References
 ```
