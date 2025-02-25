@@ -1,2 +1,5 @@
 # Ignore pre-trained model checkpoint
 AuDrA_trained.ckpt
+
+# Ignore user_images directory
+user_images
