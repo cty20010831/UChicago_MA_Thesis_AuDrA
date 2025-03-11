@@ -52,6 +52,7 @@ dataloader = user_Dataloader(args = args)
 #  GET AuDrA PREDICTIONS
 filenames = [] #storage for image names
 predictions = [] #AuDrA predictions (in JRT theta values)
+
 for _, img in enumerate(dataloader):
     fname = img[0][0]
     x = img[1]
@@ -65,10 +66,28 @@ for _, img in enumerate(dataloader):
 out_df = pd.DataFrame(zip(filenames, predictions), columns=["filenames", "predictions"])
 
 # Split the filenames column
-out_df["worker_id"] = out_df["filenames"].str.split("_Group_").str[0]
-out_df["drawing_group"] = out_df["filenames"].str.split("_Group_").str[1].str.replace(".png", "")
-out_df["drawing_group"] = "Incomplete_Group_" + out_df["drawing_group"]
-out_df = out_df[["worker_id", "drawing_group", "predictions"]]
+# left_part = out_df["filenames"].str.split("_Group_").str[0]
+# right_part = out_df["filenames"].str.split("_Group_").str[1].str.replace(".png", "")
+# split_left = left_part.str.split("_", n=2, expand=True)
+
+# out_df["batch_name"] = split_left[0] + "_" + split_left[1]
+# out_df["worker_id"] = split_left[2]
+# out_df["drawing_group"] = "Incomplete_Group_" + right_part
+
+pattern = r"^(batch_\d+)_(.+?)_Group_([ABC])\.png$"
+
+# Extract the three groups into new columns
+out_df[["batch_name", "worker_id", "group_letter"]] = out_df["filenames"].str.extract(pattern)
+
+# Now "group_letter" is e.g. "A", "B", or "C"
+# Construct the final "drawing_group" column
+out_df["drawing_group"] = "Incomplete_Group_" + out_df["group_letter"]
+
+# Drop the intermediate "group_letter" column
+out_df.drop(columns=["group_letter"], inplace=True)
+
+# Reorder columns as desired
+out_df = out_df[["batch_name", "worker_id", "drawing_group", "predictions"]]
 
 # Save to CSV
 out_df.to_csv(output_filename, index = False)
