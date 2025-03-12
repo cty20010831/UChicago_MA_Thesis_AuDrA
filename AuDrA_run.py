@@ -86,8 +86,8 @@ out_df["drawing_group"] = "Incomplete_Group_" + out_df["group_letter"]
 # Drop the intermediate "group_letter" column
 out_df.drop(columns=["group_letter"], inplace=True)
 
-# Reorder columns as desired
 out_df = out_df[["batch_name", "worker_id", "drawing_group", "predictions"]]
+out_df = out_df.rename(columns = {"predictions": "AuDrA"})
 
 # Save to CSV
 out_df.to_csv(output_filename, index = False)
