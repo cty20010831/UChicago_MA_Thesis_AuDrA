@@ -65,23 +65,13 @@ for _, img in enumerate(dataloader):
 #  SAVE OUTPUT FILE
 out_df = pd.DataFrame(zip(filenames, predictions), columns=["filenames", "predictions"])
 
-# Split the filenames column
-# left_part = out_df["filenames"].str.split("_Group_").str[0]
-# right_part = out_df["filenames"].str.split("_Group_").str[1].str.replace(".png", "")
-# split_left = left_part.str.split("_", n=2, expand=True)
-
-# out_df["batch_name"] = split_left[0] + "_" + split_left[1]
-# out_df["worker_id"] = split_left[2]
-# out_df["drawing_group"] = "Incomplete_Group_" + right_part
-
-pattern = r"^(batch_\d+)_(.+?)_Group_([ABC])\.png$"
+pattern = r"^(batch_\d+)_(.+?)_Group_([123])\.png$"
 
 # Extract the three groups into new columns
 out_df[["batch_name", "worker_id", "group_letter"]] = out_df["filenames"].str.extract(pattern)
 
-# Now "group_letter" is e.g. "A", "B", or "C"
 # Construct the final "drawing_group" column
-out_df["drawing_group"] = "Incomplete_Group_" + out_df["group_letter"]
+out_df["drawing_group"] = "Group_" + out_df["group_letter"]
 
 # Drop the intermediate "group_letter" column
 out_df.drop(columns=["group_letter"], inplace=True)
